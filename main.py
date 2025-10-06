@@ -57,8 +57,11 @@ class SteamSaleTrackerPlugin(Star):
         logger.debug(f"raw_msg: {raw_msg}")
         pic_url_list = []
         for image in raw_msg:
-            if image.type == ComponentType.Image and hasattr(image, "file"):
-                pic_url_list.append(image.file)
+            if image.type == ComponentType.Image:
+                if hasattr(image, "url"):
+                    pic_url_list.append(image.url)
+                elif hasattr(image, "file"):
+                    pic_url_list.append(image.file)
         if not pic_url_list:
             return
         logger.debug(f"pic_url_list: {pic_url_list}")
