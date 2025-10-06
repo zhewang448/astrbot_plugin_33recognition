@@ -50,7 +50,7 @@ class SteamSaleTrackerPlugin(Star):
         if not self.important_word:
             logger.error("你没有设置关键词，不执行图片关键词检测呦~")
             return
-        if not await self.handle_gruop(event.session_id):
+        if not await self.handle_group(event.session_id):
             return
 
         raw_msg = event.message_obj.message
@@ -95,7 +95,7 @@ class SteamSaleTrackerPlugin(Star):
         else:
             logger.error("未匹配到provider") if not prov else None
 
-    async def handle_gruop(self, session_id):
+    async def handle_group(self, session_id):
         if self.white_list_on and self.white_list:
             return session_id in self.white_list
         elif self.black_list_on and self.black_list:
