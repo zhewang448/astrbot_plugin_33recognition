@@ -1,0 +1,2 @@
+# astrbot_plugin_33recognition
+ 一个调用大模型检测图片中关键词的astrbot插件
