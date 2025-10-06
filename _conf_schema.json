@@ -1,0 +1,50 @@
+{
+  "important_word": { 
+      "description": "要检测的关键词", 
+      "type": "string",
+      "hint": "字符串", 
+      "default": "33"
+  },
+  "reply_text": { 
+      "description": "回复文本", 
+      "type": "string",
+      "hint": "字符串", 
+      "default": "nybb"
+  },
+  "at_on": { 
+      "description": "是否@发送者", 
+      "type": "bool",
+      "hint": "布尔值", 
+      "default": true
+  },
+  "reply_image_list": { 
+      "description": "回复图片名称列表(含后缀)", 
+      "type": "list",
+      "hint": "自定义返回的图片，详见文档", 
+      "default": ["nybb.jpg"]
+  },
+  "white_list_on": { 
+      "description": "是否启用白名单", 
+      "type": "bool",
+      "hint": "布尔值", 
+      "default": false
+  },
+  "white_list": { 
+      "description": "白名单qq群号或者qq号", 
+      "type": "list",
+      "hint": "列表", 
+      "default": []
+  },
+  "black_list_on": { 
+      "description": "是否启用黑名单", 
+      "type": "bool",
+      "hint": "布尔值", 
+      "default": false
+  },
+  "black_list": { 
+      "description": "黑名单qq群号或者qq号", 
+      "type": "list",
+      "hint": "列表", 
+      "default": []
+  }
+} 

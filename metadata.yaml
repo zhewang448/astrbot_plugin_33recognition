@@ -1,0 +1,5 @@
+name: astrbot_plugin_33recognition
+desc: 一个调用大模型检测图片中关键词的astrbot插件
+version: v1.0.0
+author: bushikq
+repo: https://github.com/zhewang448/astrbot_plugin_33recognition
