@@ -15,7 +15,7 @@ from astrbot.api.message_components import ComponentType  # 判断文件类型
     "一个调用大模型检测图片中关键词的astrbot插件",
     "1.0.0",
 )
-class SteamSaleTrackerPlugin(Star):
+class Recognition33Plugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
         self.plugin_dir = Path(__file__).resolve().parent
