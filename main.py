@@ -71,7 +71,7 @@ class Recognition33Plugin(Star):
             llm_resp = await prov.text_chat(
                 prompt=f"{raw_msg}",
                 image_urls=pic_url_list,
-                system_prompt=f"如果我发的图片中有{self.important_word}或者其他与其发音相似的中文词语，那么你就返回哈基米，除此之外不用返回别的东西。若没有则返回未发现{self.important_word}。例子：若关键词为33的时候，'珊珊'或者'山山'也需要返回哈基米",
+                system_prompt=f"如果我发的图片中有{self.important_word}或者其他与其拼音相同的中文词语，那么你就返回哈基米，除此之外不用返回别的东西。若没有则返回未发现{self.important_word}。例子：若关键词为33的时候，'珊珊'或者'山山'也需要返回哈基米",
             )
             logger.debug(f"llm_resp: {llm_resp}")
             if "哈基米" in str(llm_resp.result_chain):
