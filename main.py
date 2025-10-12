@@ -123,7 +123,7 @@ class Recognition33Plugin(Star):
                         )
                 yield event.chain_result(msg_components)
             else:
-                logger.debug(f"未发现{self.important_word}")
+                logger.debug(f"未发现{self.important_word_list}")
         else:
             logger.error("未匹配到provider") if not prov else None
 
