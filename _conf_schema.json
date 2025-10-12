@@ -46,7 +46,7 @@
       "_special": "select_provider",
       "type": "string",
       "hint": "字符串", 
-      "default": false
+      "default": ""
   },
   "black_white_list_config": {
     "description": "黑白名单设置",
