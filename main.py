@@ -8,6 +8,9 @@ from astrbot.core.config.astrbot_config import AstrBotConfig
 import astrbot.api.message_components as Comp
 from astrbot.api.message_components import ComponentType  # 判断文件类型
 
+DEFAAULT_SYSTEM_PROMPT_1 = "如果我发的图片中有关键词或者其他与其发音相似的中文词语，那么你就返回哈基米，除此之外不用返回别的东西。若没有则返回未发现关键词。例子：若关键词为33的时候，'珊珊'或者'山山'也需要返回哈基米"
+DEFAAULT_SYSTEM_PROMPT_2 = "如果我发的图片中有关键词列表中的词，那么你就返回哈基米，除此之外不用返回别的东西。若没有则返回未发现关键词。"
+
 
 @register(
     "astrbot_plugin_33recognition",
@@ -21,21 +24,43 @@ class Recognition33Plugin(Star):
         self.plugin_dir = Path(__file__).resolve().parent
         self.data_dir = Path(StarTools.get_data_dir("astrbot_plugin_33recognition"))
         self.config = config
+
+        ##处理检测文本
+        self.input_config = self.config.get("input_config")
         # 关键词
-        self.important_word = self.config.get("important_word", "33")
+        self.important_word_list = self.input_config.get("important_word_list", [])
+        # 是否启用谐音模式
+        self.xieyin_mode_on = self.input_config.get("xieyin_mode_on", True)
         # 自定义回复内容
-        self.reply_text = self.config.get("reply_text", "nybb")
-        self.at_on = self.config.get("at_on", True)
-        self.reply_image_name_list = self.config.get(
+        self.reply_config = self.config.get("reply_config")
+        self.reply_text = self.reply_config.get("reply_text", "nybb")
+        self.at_on = self.reply_config.get("at_on", True)
+        self.reply_image_name_list = self.reply_config.get(
             "reply_image_name_list", ["nybb.jpg"]
         )
-        # 处理黑白名单
-        self.white_list_on = self.config.get("white_list_on", False)
-        self.white_list = self.config.get("white_list", [])
-        self.black_list_on = self.config.get("black_list_on", False)
-        self.black_list = self.config.get("black_list", [])
+
+        ## 处理黑白名单
+        self.black_white_list_config = self.config.get("black_white_list_config")
+        self.white_list_on = self.black_white_list_config.get("white_list_on", False)
+        self.white_list = self.black_white_list_config.get("white_list", [])
+        self.black_list_on = self.black_white_list_config.get("black_list_on", False)
+        self.black_list = self.black_white_list_config.get("black_list", [])
+
+        # 处理是否需要自定义图片转述模型
+        self.default_image_caption_provider_id = self.config.get(
+            "default_image_caption_provider_id", None
+        )
+
         # 处理图片目录
         self.handle_image_dir()
+        # 处理prompt
+        self.handle_prompt()
+
+    def handle_prompt(self):
+        if self.xieyin_mode_on:
+            self.prompt = DEFAAULT_SYSTEM_PROMPT_1
+        else:
+            self.prompt = DEFAAULT_SYSTEM_PROMPT_2
 
     def handle_image_dir(self):
         if not Path(self.data_dir / "nybb.jpg").exists():
@@ -59,19 +84,26 @@ class Recognition33Plugin(Star):
         for image in raw_msg:
             if image.type == ComponentType.Image:
                 if hasattr(image, "url"):
-                    pic_url_list.append(image.url)
-                elif hasattr(image, "file"):
-                    pic_url_list.append(image.file)
+                    if image.url:
+                        pic_url_list.append(image.url)
+                    elif hasattr(image, "file"):
+                        if image.file:
+                            pic_url_list.append(image.file)
         if not pic_url_list:
             return
         logger.debug(f"pic_url_list: {pic_url_list}")
-
-        prov = self.context.get_using_provider(umo=event.unified_msg_origin)
+        if self.default_image_caption_provider_id:
+            prov = self.context.get_provider_by_id(
+                self.default_image_caption_provider_id
+            )
+            logger.debug(f"使用配置的图片转述模型: {prov}")
+        else:
+            prov = self.context.get_using_provider(umo=event.unified_msg_origin)
         if prov:
             llm_resp = await prov.text_chat(
-                prompt=f"{raw_msg}",
+                prompt=f"{self.prompt}, 关键词列表为{self.important_word_list}",
                 image_urls=pic_url_list,
-                system_prompt=f"如果我发的图片中有{self.important_word}或者其他与其拼音相同的中文词语，那么你就返回哈基米，除此之外不用返回别的东西。若没有则返回未发现{self.important_word}。例子：若关键词为33的时候，'珊珊'或者'山山'也需要返回哈基米",
+                system_prompt="严格执行我的命令",
             )
             logger.debug(f"llm_resp: {llm_resp}")
             if "哈基米" in str(llm_resp.result_chain):

@@ -1,50 +1,81 @@
 {
-  "important_word": { 
+  "input_config": {
+    "description": "检测文本设置",
+    "type": "object",
+    "items": {
+      "important_word_list": { 
       "description": "要检测的关键词", 
-      "type": "string",
+      "type": "list",
       "hint": "字符串", 
-      "default": "33"
+      "default":["33"]
+      },
+      "xieyin_mode_on": { 
+      "description": "是否开启谐音模式", 
+      "type": "bool",
+      "hint": "布尔值", 
+      "default": true
+      }
+    }
   },
-  "reply_text": { 
+  "reply_config": {
+    "description": "回复设置",
+    "type": "object",
+    "items": {
+      "reply_text": { 
       "description": "回复文本", 
       "type": "string",
       "hint": "字符串", 
       "default": "nybb"
-  },
-  "at_on": { 
+      },
+      "at_on": { 
       "description": "是否@发送者", 
       "type": "bool",
       "hint": "布尔值", 
       "default": true
-  },
-  "reply_image_list": { 
+      },
+      "reply_image_list": { 
       "description": "回复图片名称列表(含后缀)", 
       "type": "list",
       "hint": "自定义返回的图片，详见文档", 
       "default": ["nybb.jpg"]
+      }
+    }
   },
-  "white_list_on": { 
+  "default_image_caption_provider_id": { 
+      "description": "默认图片转述模型的id, 留空则使用会话的llm模型", 
+      "_special": "select_provider",
+      "type": "string",
+      "hint": "字符串", 
+      "default": false
+  },
+  "black_white_list_config": {
+    "description": "黑白名单设置",
+    "type": "object",
+    "items": {
+      "white_list_on": { 
       "description": "是否启用白名单", 
       "type": "bool",
       "hint": "布尔值", 
       "default": false
-  },
-  "white_list": { 
+      },
+      "white_list": { 
       "description": "白名单qq群号或者qq号", 
       "type": "list",
       "hint": "列表", 
       "default": []
-  },
-  "black_list_on": { 
+      },
+      "black_list_on": { 
       "description": "是否启用黑名单", 
       "type": "bool",
       "hint": "布尔值", 
       "default": false
-  },
-  "black_list": { 
+      },
+      "black_list": { 
       "description": "黑名单qq群号或者qq号", 
       "type": "list",
       "hint": "列表", 
       "default": []
+      }
+    }
   }
 } 
