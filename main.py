@@ -16,7 +16,7 @@ DEFAAULT_SYSTEM_PROMPT_2 = "如果我发的图片中有关键词列表中的词�
     "astrbot_plugin_33recognition",
     "bushikq",
     "一个调用大模型检测图片中关键词的astrbot插件",
-    "1.3.0",
+    "1.3.1",
 )
 class Recognition33Plugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
