@@ -76,7 +76,6 @@ class Recognition33Plugin(Star):
             logger.error("你没有设置关键词，不执行图片关键词检测呦~")
             return
         only_id = event.session_id.rsplit("_", 1)[-1]
-        logger.info(only_id)
         if not await self.handle_group(only_id):
             return
 
