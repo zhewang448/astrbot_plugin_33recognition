@@ -16,7 +16,7 @@ DEFAAULT_SYSTEM_PROMPT_2 = "如果我发的图片中有关键词列表中的词�
     "astrbot_plugin_33recognition",
     "bushikq",
     "一个调用大模型检测图片中关键词的astrbot插件",
-    "1.3.1",
+    "1.3.3",
 )
 class Recognition33Plugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
@@ -75,7 +75,9 @@ class Recognition33Plugin(Star):
         if not self.important_word_list:
             logger.error("你没有设置关键词，不执行图片关键词检测呦~")
             return
-        if not await self.handle_group(event.session_id):
+        only_id = event.session_id.rsplit("_", 1)[-1]
+        logger.info(only_id)
+        if not await self.handle_group(only_id):
             return
 
         raw_msg = event.message_obj.message
