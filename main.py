@@ -31,6 +31,8 @@ class Recognition33Plugin(Star):
         self.important_word_list = self.input_config.get("important_word_list", [])
         # 是否启用谐音模式
         self.xieyin_mode_on = self.input_config.get("xieyin_mode_on", True)
+        # 精确度配置
+        self.accuracy_level = self.input_config.get("accuracy_level", "中")  # 高/中/低
         # 自定义回复内容
         self.reply_config = self.config.get("reply_config")
         self.reply_text = self.reply_config.get("reply_text", "nybb")
@@ -55,6 +57,15 @@ class Recognition33Plugin(Star):
         self.handle_prompt()
 
     def handle_prompt(self):
+        # 根据精确度级别生成对应的提示语
+        accuracy_prompts = {
+            "高": "要求严格匹配，不允许任何文本差异",
+            "中": "允许少量文本和字符差异", 
+            "低": "允许较大范围的相似匹配"
+        }
+        
+        accuracy_hint = accuracy_prompts.get(self.accuracy_level, "允许少量文本和字符差异")
+        
         if self.xieyin_mode_on:
             self.prompt = DEFAAULT_SYSTEM_PROMPT_1
         else:
@@ -100,13 +111,13 @@ class Recognition33Plugin(Star):
             prov = self.context.get_using_provider(umo=event.unified_msg_origin)
         if prov:
             llm_resp = await prov.text_chat(
-                prompt=f"{self.prompt}, 关键词列表为{self.important_word_list}",
+                prompt=f"{self.prompt}, 关键词列表为{self.important_word_list}，精确度为{self.accuracy_level}",
                 image_urls=pic_url_list,
                 system_prompt="严格执行我的命令",
             )
             logger.debug(f"llm_resp: {llm_resp}")
             if "哈基米" in str(llm_resp.result_chain):
-                logger.info("发现33")
+                logger.info(f"发现33，精确度级别：{self.accuracy_level}")
                 # 可自定义回复文本
                 msg_components = [Comp.Plain(text=self.reply_text)]
                 msg_components.append(
@@ -122,7 +133,7 @@ class Recognition33Plugin(Star):
                         )
                 yield event.chain_result(msg_components)
             else:
-                logger.debug(f"未发现{self.important_word_list}")
+                logger.debug(f"未发现{self.important_word_list}，精确度级别：{self.accuracy_level}")
         else:
             logger.error("未匹配到provider") if not prov else None
 
