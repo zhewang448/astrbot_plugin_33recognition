@@ -18,7 +18,7 @@
       "accuracy_level": { 
       "description": "识别精确度级别", 
       "type": "string",
-      "hint": "高/中/低", 
+      "options":["高", "中", "低"], 
       "default": "高"
       }
     }
