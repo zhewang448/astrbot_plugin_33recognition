@@ -16,7 +16,7 @@ DEFAAULT_SYSTEM_PROMPT_2 = "如果我发的图片中有关键词列表中的词�
     "astrbot_plugin_33recognition",
     "bushikq",
     "一个调用大模型检测图片中关键词的astrbot插件",
-    "1.3.3",
+    "1.3.4",
 )
 class Recognition33Plugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
@@ -35,10 +35,8 @@ class Recognition33Plugin(Star):
         self.reply_config = self.config.get("reply_config")
         self.reply_text = self.reply_config.get("reply_text", "nybb")
         self.at_on = self.reply_config.get("at_on", True)
-        self.reply_image_name_list = self.reply_config.get(
-            "reply_image_name_list", ["nybb.jpg"]
-        )
-
+        self.reply_image_list = self.reply_config.get("reply_image_list", ["nybb.jpg"])
+        logger.debug(f"reply_image_list: {self.reply_image_list}")
         ## 处理黑白名单
         self.black_white_list_config = self.config.get("black_white_list_config")
         self.white_list_on = self.black_white_list_config.get("white_list_on", False)
@@ -115,8 +113,8 @@ class Recognition33Plugin(Star):
                     Comp.At(qq=event.get_sender_id())
                 ) if self.at_on else None
 
-                if self.reply_image_name_list:
-                    for reply_image_name in self.reply_image_name_list:
+                if self.reply_image_list:
+                    for reply_image_name in self.reply_image_list:
                         msg_components.append(
                             Comp.Image.fromFileSystem(
                                 f"{self.data_dir}/{reply_image_name}"
